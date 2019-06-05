@@ -4,7 +4,7 @@
 #
 Name     : kernel-install
 Version  : 4
-Release  : 3
+Release  : 4
 URL      : https://github.com/clearlinux/kernel-install/archive/v4.tar.gz
 Source0  : https://github.com/clearlinux/kernel-install/archive/v4.tar.gz
 Summary  : No detailed summary available
