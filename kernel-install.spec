@@ -4,13 +4,14 @@
 #
 Name     : kernel-install
 Version  : 4
-Release  : 4
+Release  : 5
 URL      : https://github.com/clearlinux/kernel-install/archive/v4.tar.gz
 Source0  : https://github.com/clearlinux/kernel-install/archive/v4.tar.gz
 Summary  : No detailed summary available
 Group    : Development/Tools
 License  : GPL-2.0
-Requires: kernel-install-bin
+Requires: kernel-install-bin = %{version}-%{release}
+Requires: kernel-install-license = %{version}-%{release}
 
 %description
 No detailed description available
@@ -18,25 +19,46 @@ No detailed description available
 %package bin
 Summary: bin components for the kernel-install package.
 Group: Binaries
+Requires: kernel-install-license = %{version}-%{release}
 
 %description bin
 bin components for the kernel-install package.
 
 
+%package license
+Summary: license components for the kernel-install package.
+Group: Default
+
+%description license
+license components for the kernel-install package.
+
+
 %prep
 %setup -q -n kernel-install-4
+cd %{_builddir}/kernel-install-4
 
 %build
 export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
-export LANG=C
-export SOURCE_DATE_EPOCH=1524601005
+export LANG=C.UTF-8
+export SOURCE_DATE_EPOCH=1604098126
+export GCC_IGNORE_WERROR=1
+export AR=gcc-ar
+export RANLIB=gcc-ranlib
+export NM=gcc-nm
+export CFLAGS="$CFLAGS -O3 -ffat-lto-objects -flto=4 "
+export FCFLAGS="$FFLAGS -O3 -ffat-lto-objects -flto=4 "
+export FFLAGS="$FFLAGS -O3 -ffat-lto-objects -flto=4 "
+export CXXFLAGS="$CXXFLAGS -O3 -ffat-lto-objects -flto=4 "
 make  %{?_smp_mflags}
 
+
 %install
-export SOURCE_DATE_EPOCH=1524601005
+export SOURCE_DATE_EPOCH=1604098126
 rm -rf %{buildroot}
+mkdir -p %{buildroot}/usr/share/package-licenses/kernel-install
+cp %{_builddir}/kernel-install-4/COPYING %{buildroot}/usr/share/package-licenses/kernel-install/4cc77b90af91e615a64ae04893fdffa7939db84c
 %make_install
 
 %files
@@ -45,3 +67,7 @@ rm -rf %{buildroot}
 %files bin
 %defattr(-,root,root,-)
 /usr/bin/installkernel
+
+%files license
+%defattr(0644,root,root,0755)
+/usr/share/package-licenses/kernel-install/4cc77b90af91e615a64ae04893fdffa7939db84c
